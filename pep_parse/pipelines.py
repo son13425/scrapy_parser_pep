@@ -3,7 +3,6 @@ import datetime as dt
 from collections import Counter
 from pathlib import Path
 
-from scrapy.exceptions import DropItem
 
 BASE_DIR = Path(__file__).parent.parent
 DATETIME_FORMAT = '%Y-%m-%d_%H-%M-%S'
@@ -15,10 +14,8 @@ class PepParsePipeline:
         self.count_status = Counter()
 
     def process_item(self, item, spider):
-        if 'status' not in item:
-            raise DropItem('Статус не найден')
-        pep_status = item['status']
-        self.count_status[pep_status] += 1
+        status = item['status']
+        self.count_status[status] = self.count_status.get(status, 0) + 1
         return item
 
     def close_spider(self, spider):
